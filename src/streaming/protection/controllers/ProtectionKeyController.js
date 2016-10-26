@@ -203,24 +203,19 @@ function ProtectionKeyController() {
      *
      * @param {ArrayBuffer} initData Concatenated PSSH data for all DRMs
      * supported by the content
-     * @param {ProtectionData} protDataSet user specified protection data - license server url etc
-     * supported by the content
      * @returns {Array.<Object>} array of objects indicating which supported key
      * systems were found.  Empty array is returned if no
      * supported key systems were found
      * @memberof module:ProtectionKeyController
      * @instance
      */
-    function getSupportedKeySystems(initData, protDataSet) {
+    function getSupportedKeySystems(initData) {
         var ksIdx;
         var supportedKS = [];
         var pssh = CommonEncryption.parsePSSHList(initData);
 
         for (ksIdx = 0; ksIdx < keySystems.length; ++ksIdx) {
-            var keySystemString = keySystems[ksIdx].systemString;
-            var shouldNotFilterOutKeySystem = (protDataSet) ? keySystemString in protDataSet : true;
-
-            if (keySystems[ksIdx].uuid in pssh && shouldNotFilterOutKeySystem) {
+            if (keySystems[ksIdx].uuid in pssh) {
                 supportedKS.push({
                     ks: keySystems[ksIdx],
                     initData: pssh[keySystems[ksIdx].uuid]
